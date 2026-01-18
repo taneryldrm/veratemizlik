@@ -1,0 +1,415 @@
+/* ========================================
+   CONTACT PAGE STYLES
+======================================== */
+.page {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* ========================================
+   HERO SECTION
+======================================== */
+.hero {
+    position: relative;
+    padding: calc(var(--header-height) + var(--space-16)) 0 var(--space-16);
+    background: var(--gradient-primary);
+    overflow: hidden;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--color-white);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.badge {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-4);
+}
+
+.heroTitle {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: var(--space-4);
+    color: var(--color-white);
+}
+
+.heroDescription {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ========================================
+   CONTACT SECTION
+======================================== */
+.contact {
+    padding: var(--space-20) 0;
+    background: var(--color-gray-50);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: var(--space-12);
+    align-items: start;
+}
+
+/* ========================================
+   INFO SIDE
+======================================== */
+.info h2 {
+    font-size: var(--text-3xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-4);
+}
+
+.infoDescription {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-8);
+}
+
+.infoCards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.infoCard {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+}
+
+.infoIcon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.infoIcon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+}
+
+.infoCard h4 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-1);
+}
+
+.infoCard p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.infoCard a {
+    color: var(--color-gray-600);
+    transition: color var(--transition-fast);
+}
+
+.infoCard a:hover {
+    color: var(--color-primary);
+}
+
+/* Quick Contact */
+.quickContact {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.phoneButton,
+.whatsappButton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    font-size: var(--text-base);
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    transition: all var(--transition-base);
+}
+
+.phoneButton {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.phoneButton:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+.whatsappButton {
+    background: #25D366;
+    color: var(--color-white);
+}
+
+.whatsappButton:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+}
+
+.phoneButton svg,
+.whatsappButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ========================================
+   FORM WRAPPER
+======================================== */
+.formWrapper {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+}
+
+.formCard {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-lg);
+}
+
+.formCard h3 {
+    font-size: var(--text-2xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-6);
+}
+
+/* ========================================
+   FORM
+======================================== */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.formGroup label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    transition: all var(--transition-fast);
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+    color: var(--color-gray-400);
+}
+
+.formGroup textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.submitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-4);
+    margin-top: var(--space-2);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: 0 4px 14px rgba(0, 86, 179, 0.35);
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 86, 179, 0.45);
+}
+
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.submitButton svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success Message */
+.successMessage {
+    text-align: center;
+    padding: var(--space-10) var(--space-4);
+}
+
+.successIcon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    border-radius: 50%;
+    margin: 0 auto var(--space-6);
+    animation: scaleIn 0.5s ease;
+}
+
+.successIcon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--color-white);
+}
+
+.successMessage h4 {
+    font-size: var(--text-2xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.successMessage p {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+/* ========================================
+   MAP SECTION
+======================================== */
+.map {
+    background: var(--color-gray-900);
+}
+
+.mapContainer {
+    width: 100%;
+    height: 450px;
+}
+
+.mapContainer iframe {
+    filter: grayscale(20%);
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-10);
+    }
+
+    .formWrapper {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: calc(var(--header-height) + var(--space-10)) 0 var(--space-10);
+    }
+
+    .contact {
+        padding: var(--space-12) 0;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .formCard {
+        padding: var(--space-6);
+    }
+
+    .quickContact {
+        flex-direction: column;
+    }
+
+    .mapContainer {
+        height: 350px;
+    }
+}

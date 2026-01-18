@@ -1,0 +1,418 @@
+/* ========================================
+   ABOUT PAGE STYLES
+======================================== */
+.page {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* ========================================
+   HERO SECTION
+======================================== */
+.hero {
+    position: relative;
+    padding: calc(var(--header-height) + var(--space-16)) 0 var(--space-16);
+    background: var(--gradient-primary);
+    overflow: hidden;
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--color-white);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.badge {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-4);
+}
+
+.heroTitle {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: var(--space-4);
+    color: var(--color-white);
+}
+
+.heroDescription {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ========================================
+   SECTION COMMON
+======================================== */
+.sectionBadge {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-4);
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: var(--space-12);
+}
+
+.sectionHeader h2 {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    color: var(--color-gray-900);
+}
+
+/* ========================================
+   STORY SECTION
+======================================== */
+.story {
+    padding: var(--space-20) 0;
+    background: var(--color-white);
+}
+
+.storyGrid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+}
+
+.storyContent h2 {
+    font-size: var(--text-3xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-6);
+}
+
+.storyContent p {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    line-height: 1.8;
+}
+
+.storyStats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.statCard {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+}
+
+.statNumber {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-bottom: var(--space-2);
+}
+
+.statLabel {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+}
+
+/* ========================================
+   MISSION & VISION
+======================================== */
+.missionVision {
+    padding: var(--space-20) 0;
+    background: var(--color-gray-900);
+}
+
+.mvGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+}
+
+.mvCard {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    text-align: center;
+}
+
+.mvIcon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-xl);
+    margin: 0 auto var(--space-5);
+}
+
+.mvIcon svg {
+    width: 32px;
+    height: 32px;
+    color: var(--color-white);
+}
+
+.mvCard h3 {
+    font-size: var(--text-2xl);
+    color: var(--color-white);
+    margin-bottom: var(--space-4);
+}
+
+.mvCard p {
+    font-size: var(--text-base);
+    color: var(--color-gray-400);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ========================================
+   VALUES
+======================================== */
+.values {
+    padding: var(--space-20) 0;
+    background: var(--color-gray-50);
+}
+
+.valuesGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+}
+
+.valueCard {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+}
+
+.valueCard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.valueIcon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-secondary);
+    border-radius: var(--radius-lg);
+    margin: 0 auto var(--space-4);
+}
+
+.valueIcon svg {
+    width: 28px;
+    height: 28px;
+    color: var(--color-primary);
+}
+
+.valueCard h4 {
+    font-size: var(--text-lg);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.valueCard p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ========================================
+   TIMELINE
+======================================== */
+.timeline {
+    padding: var(--space-20) 0;
+    background: var(--color-white);
+}
+
+.timelineWrapper {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timelineWrapper::before {
+    content: '';
+    position: absolute;
+    left: 50px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-gray-200);
+}
+
+.timelineItem {
+    display: flex;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+    position: relative;
+}
+
+.timelineItem:last-child {
+    margin-bottom: 0;
+}
+
+.timelineYear {
+    flex-shrink: 0;
+    width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    z-index: 1;
+}
+
+.timelineContent {
+    flex: 1;
+    padding-top: var(--space-2);
+}
+
+.timelineContent h4 {
+    font-size: var(--text-lg);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-1);
+}
+
+.timelineContent p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+/* ========================================
+   TEAM
+======================================== */
+.team {
+    padding: var(--space-20) 0;
+    background: var(--color-gray-50);
+}
+
+.teamGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+}
+
+.teamCard {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.teamAvatar {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    border-radius: 50%;
+    margin: 0 auto var(--space-4);
+}
+
+.teamCard h4 {
+    font-size: var(--text-lg);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-1);
+}
+
+.teamCard p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 1024px) {
+
+    .valuesGrid,
+    .teamGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: calc(var(--header-height) + var(--space-10)) 0 var(--space-10);
+    }
+
+    .story,
+    .missionVision,
+    .values,
+    .timeline,
+    .team {
+        padding: var(--space-12) 0;
+    }
+
+    .storyGrid {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+
+    .mvGrid {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    .valuesGrid,
+    .teamGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .timelineWrapper::before {
+        left: 20px;
+    }
+
+    .timelineYear {
+        width: 40px;
+        font-size: var(--text-xs);
+    }
+}

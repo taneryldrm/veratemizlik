@@ -1,0 +1,298 @@
+/* ========================================
+   CONTACT FORM SECTION STYLES
+======================================== */
+.contact {
+    padding: var(--space-24) 0;
+    background: var(--color-gray-50);
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* ========================================
+   CONTENT LAYOUT
+======================================== */
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: var(--space-12);
+    align-items: start;
+}
+
+/* ========================================
+   INFO SIDE
+======================================== */
+.info {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+}
+
+.badge {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-4);
+}
+
+.title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.2;
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-4);
+}
+
+.highlight {
+    color: var(--color-primary);
+}
+
+.description {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: var(--space-8);
+}
+
+/* ========================================
+   CONTACT METHODS
+======================================== */
+.contactMethods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.contactItem {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.contactIcon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.contactIcon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-primary);
+}
+
+.contactText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.contactLabel {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.contactText p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.contactText a {
+    color: var(--color-gray-600);
+    transition: color var(--transition-fast);
+}
+
+.contactText a:hover {
+    color: var(--color-primary);
+}
+
+/* ========================================
+   FORM WRAPPER
+======================================== */
+.formWrapper {
+    position: relative;
+}
+
+.formCard {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========================================
+   FORM
+======================================== */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.formLabel {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    transition: all var(--transition-fast);
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+    color: var(--color-gray-400);
+}
+
+.formTextarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.formButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.formButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   SUCCESS MESSAGE
+======================================== */
+.successMessage {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+}
+
+.successIcon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    border-radius: 50%;
+    margin: 0 auto var(--space-6);
+    animation: scaleIn 0.5s ease;
+}
+
+.successIcon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--color-white);
+}
+
+.successMessage h3 {
+    font-size: var(--text-2xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.successMessage p {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 900px) {
+    .content {
+        grid-template-columns: 1fr;
+        gap: var(--space-10);
+    }
+
+    .info {
+        position: static;
+        text-align: center;
+    }
+
+    .contactMethods {
+        align-items: center;
+    }
+
+    .contactItem {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .contact {
+        padding: var(--space-16) 0;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+
+    .formCard {
+        padding: var(--space-6);
+    }
+}
