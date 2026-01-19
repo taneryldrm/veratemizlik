@@ -399,6 +399,11 @@
     gap: var(--space-2);
 }
 
+.stepActions .btn svg {
+    width: 24px;
+    height: 24px;
+}
+
 .nextBtn:disabled,
 .submitBtn:disabled {
     opacity: 0.5;
@@ -513,12 +518,25 @@
     }
 
     .stepActions {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        justify-content: center;
     }
 
     .stepActions .btn {
-        width: 100%;
+        width: auto !important;
+        min-width: 120px !important;
+        max-width: 160px !important;
+        padding: var(--space-2) var(--space-4) !important;
+        font-size: var(--text-sm) !important;
         justify-content: center;
+        flex: 0 0 auto !important;
+    }
+
+    .stepActions .btn svg {
+        width: 16px !important;
+        height: 16px !important;
     }
 
     .successActions {

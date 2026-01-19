@@ -7,6 +7,7 @@ import styles from './admin.module.css';
 
 const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: '📊' },
+    { name: 'Projeler', path: '/admin/projeler', icon: '🖼️' },
     { name: 'Blog Yazıları', path: '/admin/blog', icon: '📝' },
     { name: 'Teklif Talepleri', path: '/admin/teklifler', icon: '📋' },
     { name: 'Hizmetler', path: '/admin/hizmetler', icon: '🛠️' },

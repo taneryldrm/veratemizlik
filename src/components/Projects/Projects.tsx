@@ -1,50 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getFeaturedProjects, Project } from '@/lib/projectStore';
 import styles from './Projects.module.css';
 
-const projects = [
-    {
-        id: 1,
-        title: 'Lara Villaları Derin Temizlik',
-        category: 'Villa Temizliği',
-        location: 'Lara, Antalya',
-        beforeImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop',
-    },
-    {
-        id: 2,
-        title: 'Konyaaltı Plaza Ofis Temizliği',
-        category: 'Ofis Temizliği',
-        location: 'Konyaaltı, Antalya',
-        beforeImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop',
-    },
-    {
-        id: 3,
-        title: 'Muratpaşa Residence İnşaat Sonrası',
-        category: 'İnşaat Sonrası',
-        location: 'Muratpaşa, Antalya',
-        beforeImage: 'https://images.unsplash.com/photo-1503387837-b154d5074bd2?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop',
-    },
-    {
-        id: 4,
-        title: 'Kepez AVM Dış Cephe Temizliği',
-        category: 'Dış Cephe',
-        location: 'Kepez, Antalya',
-        beforeImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop',
-    },
-];
-
 export default function Projects() {
+    const [projects, setProjects] = useState<Project[]>([]);
     const [activeSliders, setActiveSliders] = useState<{ [key: number]: number }>({});
+
+    // Projeleri yükle
+    useEffect(() => {
+        setProjects(getFeaturedProjects());
+
+        const handleUpdate = () => {
+            setProjects(getFeaturedProjects());
+        };
+
+        window.addEventListener('projectsUpdated', handleUpdate);
+        return () => window.removeEventListener('projectsUpdated', handleUpdate);
+    }, []);
 
     const handleSliderChange = (projectId: number, value: number) => {
         setActiveSliders(prev => ({ ...prev, [projectId]: value }));
     };
+
+    if (projects.length === 0) {
+        return null; // Proje yoksa bileşeni gösterme
+    }
 
     return (
         <section className={styles.projects}>

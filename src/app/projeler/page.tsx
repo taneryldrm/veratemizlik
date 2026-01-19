@@ -1,88 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { getPublishedProjects, projectCategories, Project } from '@/lib/projectStore';
 import styles from './projeler.module.css';
 
-const categories = ['Tümü', 'Ev', 'Ofis', 'Villa', 'İnşaat Sonrası', 'Dış Cephe'];
-
-const projects = [
-    {
-        id: 1,
-        title: 'Lara Villaları Derin Temizlik',
-        category: 'Villa',
-        location: 'Lara, Antalya',
-        description: '1500 m² villa kompleksinin kapsamlı derin temizliği. Havuz alanı, bahçe ve tüm iç mekanlar dahil.',
-        beforeImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop',
-    },
-    {
-        id: 2,
-        title: 'Konyaaltı Plaza Ofis Temizliği',
-        category: 'Ofis',
-        location: 'Konyaaltı, Antalya',
-        description: '2000 m² ofis alanının günlük temizlik programı. 50+ çalışan için hijyenik ortam.',
-        beforeImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&h=400&fit=crop',
-    },
-    {
-        id: 3,
-        title: 'Muratpaşa Residence İnşaat Sonrası',
-        category: 'İnşaat Sonrası',
-        location: 'Muratpaşa, Antalya',
-        description: '48 daireli sitenin teslim öncesi temizliği. Ortak alanlar dahil tam temizlik.',
-        beforeImage: 'https://images.unsplash.com/photo-1503387837-b154d5074bd2?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop',
-    },
-    {
-        id: 4,
-        title: 'Kepez AVM Dış Cephe Temizliği',
-        category: 'Dış Cephe',
-        location: 'Kepez, Antalya',
-        description: 'Alışveriş merkezinin cam cephe ve dış yüzey temizliği. Yüksek basınçlı yıkama.',
-        beforeImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop',
-    },
-    {
-        id: 5,
-        title: 'Güzeloba Villası Premium Temizlik',
-        category: 'Villa',
-        location: 'Güzeloba, Antalya',
-        description: 'Lüks villa için sezonluk kapsamlı temizlik. Mobilya bakımı dahil.',
-        beforeImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=400&fit=crop',
-    },
-    {
-        id: 6,
-        title: 'Antalya Merkez Daire Temizliği',
-        category: 'Ev',
-        location: 'Merkez, Antalya',
-        description: '3+1 dairenin taşınma sonrası derin temizliği. Tüm odalar ve balkon dahil.',
-        beforeImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop',
-    },
-    {
-        id: 7,
-        title: 'Teknoloji Şirketi Ofis Temizliği',
-        category: 'Ofis',
-        location: 'Lara, Antalya',
-        description: 'Modern teknoloji ofisinin haftalık temizlik programı. Dezenfeksiyon dahil.',
-        beforeImage: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&h=400&fit=crop',
-    },
-    {
-        id: 8,
-        title: 'Belek Tatil Köyü Temizliği',
-        category: 'Villa',
-        location: 'Belek, Antalya',
-        description: 'Tatil köyü villalarının sezon açılışı temizliği. 20 villa, 3 günde tamamlandı.',
-        beforeImage: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop',
-        afterImage: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&h=400&fit=crop',
-    },
-];
-
 export default function ProjelerPage() {
+    const [projects, setProjects] = useState<Project[]>([]);
     const [activeCategory, setActiveCategory] = useState('Tümü');
     const [activeSliders, setActiveSliders] = useState<{ [key: number]: number }>({});
+
+    // Projeleri yükle
+    useEffect(() => {
+        setProjects(getPublishedProjects());
+
+        const handleUpdate = () => {
+            setProjects(getPublishedProjects());
+        };
+
+        window.addEventListener('projectsUpdated', handleUpdate);
+        return () => window.removeEventListener('projectsUpdated', handleUpdate);
+    }, []);
+
+    // Dinamik kategorileri oluştur
+    const categories = useMemo(() => {
+        const uniqueCategories = [...new Set(projects.map(p => p.category))];
+        return ['Tümü', ...uniqueCategories];
+    }, [projects]);
 
     const filteredProjects = activeCategory === 'Tümü'
         ? projects
@@ -181,7 +124,9 @@ export default function ProjelerPage() {
                                 <div className={styles.projectInfo}>
                                     <span className={styles.projectCategory}>{project.category}</span>
                                     <h3 className={styles.projectTitle}>{project.title}</h3>
-                                    <p className={styles.projectDescription}>{project.description}</p>
+                                    {project.description && (
+                                        <p className={styles.projectDescription}>{project.description}</p>
+                                    )}
                                     <p className={styles.projectLocation}>
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
