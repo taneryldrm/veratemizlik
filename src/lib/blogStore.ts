@@ -13,6 +13,7 @@ export interface BlogPost {
     status: 'Yayında' | 'Taslak';
     views: number;
     featured: boolean;
+    tags?: string[];
 }
 
 // Varsayılan blog yazıları

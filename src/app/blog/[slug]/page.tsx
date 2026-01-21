@@ -1,321 +1,290 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { getBlogPostBySlug, getPublishedPosts, BlogPost } from '@/lib/blogStore';
+import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import styles from './blog-detay.module.css';
 
-// Mock blog data
-const blogPosts: Record<string, {
-    title: string;
-    excerpt: string;
-    content: string;
-    image: string;
-    category: string;
-    date: string;
-    readTime: string;
-    author: { name: string; avatar: string };
-}> = {
-    'ev-temizliginde-10-altin-kural': {
-        title: 'Ev Temizliğinde 10 Altın Kural',
-        excerpt: 'Profesyonel temizlikçilerden öğrendiğimiz, evinizi her zaman pırıl pırıl tutacak 10 önemli temizlik kuralı.',
-        content: `
-      <p>Evinizi temiz ve düzenli tutmak, hem fiziksel hem de zihinsel sağlığınız için son derece önemlidir. Profesyonel temizlik ekibimizin yıllarca edindiği deneyimlerden derlediğimiz bu 10 altın kural, evinizi her zaman pırıl pırıl tutmanıza yardımcı olacak.</p>
+export default function BlogDetailPage() {
+    const params = useParams();
+    const slug = params.slug as string;
 
-      <h2>1. Yukarıdan Aşağıya Temizlik Yapın</h2>
-      <p>Temizlik yaparken her zaman tavandan başlayıp zemine doğru inin. Bu sayede toz ve kirler yukarıdan aşağıya düşer ve daha önce temizlediğiniz yerleri tekrar kirletmezsiniz.</p>
+    const [post, setPost] = useState<BlogPost | null>(null);
+    const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-      <h2>2. Her Odaya 10 Dakika Kuralı</h2>
-      <p>Her gün her odada sadece 10 dakika temizlik yapın. Bu küçük alışkanlık, büyük temizlik günlerinin gerekliliğini azaltır ve evinizi sürekli düzenli tutar.</p>
+    useEffect(() => {
+        const loadPost = () => {
+            const foundPost = getBlogPostBySlug(slug);
+            setPost(foundPost || null);
 
-      <h2>3. Doğru Ürünleri Kullanın</h2>
-      <p>Her yüzey için doğru temizlik ürününü kullanmak hem daha etkili temizlik sağlar hem de yüzeylerinizi korur. Örneğin, mermer için asidik temizleyiciler kullanmayın.</p>
+            if (foundPost) {
+                // Get related posts from same category
+                const allPosts = getPublishedPosts();
+                const related = allPosts
+                    .filter(p => p.category === foundPost.category && p.id !== foundPost.id)
+                    .slice(0, 3);
+                setRelatedPosts(related);
 
-      <h2>4. Mikrofiber Bez Tercih Edin</h2>
-      <p>Mikrofiber bezler, normal bezlere göre çok daha fazla toz ve kiri tutar. Üstelik yeniden yıkanıp kullanılabilirler, bu da hem ekonomik hem de çevre dostudur.</p>
+                // Update page title dynamically
+                document.title = `${foundPost.title} | Vera Temizlik Blog`;
 
-      <h2>5. Döküntüleri Hemen Temizleyin</h2>
-      <p>Halıya dökülen kahve veya yere dökülen sos, hemen temizlenirse leke bırakmaz. Bekledikçe temizlemesi zorlaşır.</p>
+                // Update meta description
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.setAttribute('content', foundPost.excerpt);
+                } else {
+                    const newMeta = document.createElement('meta');
+                    newMeta.name = 'description';
+                    newMeta.content = foundPost.excerpt;
+                    document.head.appendChild(newMeta);
+                }
+            }
 
-      <h2>6. Düzenli Havalandırma</h2>
-      <p>Her gün en az 15-20 dakika pencerelerinizi açarak evinizi havalandırın. Temiz hava, hem ortam havasını tazeler hem de nem ve kokuları giderir.</p>
+            setIsLoading(false);
+        };
 
-      <h2>7. Kapı Önü Paspası Kullanın</h2>
-      <p>Kapı önüne bir paspas koymak, dışarıdan gelen kir ve tozun büyük kısmını engeller. Bu basit önlem, iç mekan temizliğini önemli ölçüde kolaylaştırır.</p>
+        loadPost();
 
-      <h2>8. Haftalık Temizlik Planı Oluşturun</h2>
-      <p>Her güne belirli görevler atayın: Pazartesi mutfak, Salı banyolar gibi. Bu sistem, işleri yönetilebilir parçalara böler.</p>
+        // Listen for updates
+        const handleUpdate = () => loadPost();
+        window.addEventListener('blogPostsUpdated', handleUpdate);
+        window.addEventListener('storage', handleUpdate);
 
-      <h2>9. Temizlik Malzemelerinizi Organize Edin</h2>
-      <p>Tüm temizlik malzemelerinizi tek bir yerde, kolayca erişilebilir şekilde saklayın. Bu, temizlik yapma motivasyonunuzu artırır.</p>
+        return () => {
+            window.removeEventListener('blogPostsUpdated', handleUpdate);
+            window.removeEventListener('storage', handleUpdate);
+        };
+    }, [slug]);
 
-      <h2>10. Profesyonel Desteği İhmal Etmeyin</h2>
-      <p>Yılda en az 2-3 kez profesyonel derin temizlik yaptırmak, evinizin uzun vadeli temizliği ve hijyeni için önemlidir. Vera Temizlik olarak bu konuda size yardımcı olmaktan mutluluk duyarız.</p>
-
-      <h2>Sonuç</h2>
-      <p>Bu 10 altın kuralı takip ederek evinizi her zaman temiz ve düzenli tutabilirsiniz. Unutmayın, temizlik bir maraton, sprint değil. Küçük ama düzenli adımlar, büyük sonuçlar doğurur.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200&h=600&fit=crop',
-        category: 'Temizlik İpuçları',
-        date: '15 Ocak 2024',
-        readTime: '5 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-    'cevre-dostu-temizlik-urunleri': {
-        title: 'Çevre Dostu Temizlik Ürünleri Neden Önemli?',
-        excerpt: 'Sağlığınız ve çevre için neden organik ve doğal temizlik ürünleri tercih etmelisiniz?',
-        content: `
-      <p>Günümüzde çevre bilinci artarken, evlerimizde kullandığımız temizlik ürünlerinin de çevre dostu olması önem kazanıyor. Bu yazıda, doğal temizlik ürünlerinin neden tercih edilmesi gerektiğini ve faydalarını inceleyeceğiz.</p>
-
-      <h2>Geleneksel Temizlik Ürünlerinin Riskleri</h2>
-      <p>Birçok geleneksel temizlik ürünü, sert kimyasallar içerir. Bu kimyasallar hem sağlığımıza hem de çevreye zarar verebilir. Özellikle kapalı mekanlarda kullanıldığında, bu ürünler iç hava kalitesini olumsuz etkiler.</p>
-
-      <h2>Çevre Dostu Ürünlerin Avantajları</h2>
-      <ul>
-        <li>Daha az toksik madde içerir</li>
-        <li>Biyolojik olarak parçalanabilir</li>
-        <li>Ozon tabakasına zarar vermez</li>
-        <li>Su kaynaklarını korur</li>
-        <li>Alerjik reaksiyonları azaltır</li>
-      </ul>
-
-      <h2>Vera Temizlik'in Yaklaşımı</h2>
-      <p>Vera Temizlik olarak, tüm temizlik hizmetlerimizde çevre dostu ve sertifikalı ürünler kullanıyoruz. Müşterilerimizin sağlığını ve çevreyi korumak önceliğimizdir.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=600&fit=crop',
-        category: 'Sürdürülebilirlik',
-        date: '12 Ocak 2024',
-        readTime: '4 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-    'ofis-temizliginin-calisan-verimliligi-uzerine-etkisi': {
-        title: 'Ofis Temizliğinin Çalışan Verimliliği Üzerine Etkisi',
-        excerpt: 'Temiz ve düzenli bir çalışma ortamının iş performansına etkilerini araştırdık.',
-        content: `
-      <p>Çalışma ortamınızın temizliği, sadece görsel açıdan değil, çalışan sağlığı ve verimliliği açısından da büyük önem taşıyor. Araştırmalar, temiz bir ofisin çalışan performansını %15'e kadar artırabildiğini gösteriyor.</p>
-
-      <h2>Temiz Ofisin Faydaları</h2>
-      <ul>
-        <li>Hastalık oranlarında azalma</li>
-        <li>Konsantrasyon artışı</li>
-        <li>Motivasyon yükselmesi</li>
-        <li>Profesyonel imaj</li>
-        <li>Müşteri memnuniyeti</li>
-      </ul>
-
-      <h2>Düzenli Temizliğin Önemi</h2>
-      <p>Günlük temizlik rutinleri, bakterilerin ve virüslerin yayılmasını önler. Özellikle sık temas edilen yüzeyler (kapı kolları, klavyeler, telefonlar) düzenli olarak dezenfekte edilmelidir.</p>
-
-      <h2>Profesyonel Çözümler</h2>
-      <p>Vera Temizlik olarak, ofislerinize özel temizlik programları sunuyoruz. Mesai saatleri dışında hizmet vererek iş akışınızı kesintiye uğratmadan çalışma ortamınızı hijyenik tutuyoruz.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=600&fit=crop',
-        category: 'İş Hayatı',
-        date: '10 Ocak 2024',
-        readTime: '6 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-    'kis-temizligi-icin-oneriler': {
-        title: 'Kış Aylarında Ev Temizliği İçin Öneriler',
-        excerpt: 'Soğuk havalarda evinizdeki hijyeni korumak için pratik temizlik tavsiyeleri.',
-        content: `
-      <p>Kış ayları, evinizde daha fazla vakit geçirdiğiniz dönemlerdir. Bu nedenle iç mekan temizliği ve hava kalitesi daha da önem kazanır. İşte kış temizliği için önerilerimiz.</p>
-
-      <h2>Havalandırma</h2>
-      <p>Soğuk havaya rağmen her gün en az 10-15 dakika evinizi havalandırın. Bu, iç ortamdaki mikropların azalmasına yardımcı olur.</p>
-
-      <h2>Halı ve Kilim Bakımı</h2>
-      <p>Kışın halılar daha fazla toz ve kir toplar. Haftada en az iki kez elektrikli süpürge ile temizlik yapın ve yılda bir kez profesyonel yıkama yaptırın.</p>
-
-      <h2>Kalorifer ve Klimaların Temizliği</h2>
-      <p>Isıtma sistemlerinizin filtrelerini düzenli temizleyin. Kirli filtreler enerji verimliliğini düşürür ve havadaki toz parçacıklarını artırır.</p>
-
-      <h2>Profesyonel Destek</h2>
-      <p>Kış dönemi öncesi derin temizlik yaptırmak, sezon boyunca daha sağlıklı bir ortam sağlar. Vera Temizlik olarak kış öncesi paketlerimizle hizmetinizdeyiz.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&h=600&fit=crop',
-        category: 'Temizlik İpuçları',
-        date: '8 Ocak 2024',
-        readTime: '4 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-    'antalya-temizlik-sirketi-nasil-secilir': {
-        title: 'Antalya\'da Temizlik Şirketi Nasıl Seçilir?',
-        excerpt: 'Güvenilir bir temizlik şirketi seçerken dikkat etmeniz gereken 7 önemli kriter.',
-        content: `
-      <p>Evinizi veya iş yerinizi emanet edeceğiniz temizlik şirketini seçerken dikkatli olmalısınız. İşte güvenilir bir temizlik şirketi seçerken dikkat etmeniz gereken 7 önemli kriter.</p>
-
-      <h2>1. Referansları İnceleyin</h2>
-      <p>Şirketin mevcut müşterilerinden referans isteyin ve online yorumları okuyun.</p>
-
-      <h2>2. Sigorta ve Lisans</h2>
-      <p>Şirketin gerekli sigorta ve lisanslara sahip olduğundan emin olun. Bu, olası hasarlarda korunmanızı sağlar.</p>
-
-      <h2>3. Deneyim</h2>
-      <p>Sektörde kaç yıldır faaliyet gösterdiğini ve uzmanlaştığı alanları öğrenin.</p>
-
-      <h2>4. Kullanılan Ürünler</h2>
-      <p>Çevre dostu ve sağlık açısından güvenli ürünler kullanan şirketleri tercih edin.</p>
-
-      <h2>5. Şeffaf Fiyatlandırma</h2>
-      <p>Gizli maliyetler olmadan, net ve anlaşılır fiyat teklifi sunan şirketleri seçin.</p>
-
-      <h2>6. Personel Güvenliği</h2>
-      <p>Çalışanların güvenlik araştırmasından geçip geçmediğini sorun.</p>
-
-      <h2>7. Esneklik</h2>
-      <p>İhtiyaçlarınıza göre özelleştirilmiş hizmet sunabilen şirketleri tercih edin.</p>
-
-      <p>Vera Temizlik olarak, 12 yıllık deneyimimiz ve 5000+ mutlu müşterimizle bu kriterlerin tamamını karşılıyoruz.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1527515545081-5db817172677?w=1200&h=600&fit=crop',
-        category: 'Rehber',
-        date: '5 Ocak 2024',
-        readTime: '5 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-    'mutfak-temizligi-adim-adim': {
-        title: 'Mutfak Temizliği: Adım Adım Rehber',
-        excerpt: 'Mutfağınızı profesyonel gibi temizlemek için detaylı adım adım rehberimiz.',
-        content: `
-      <p>Mutfak, evinizin en çok kullanılan ve en hızlı kirlenen alanlarından biridir. İşte mutfağınızı profesyonel gibi temizlemek için adım adım rehberimiz.</p>
-
-      <h2>Adım 1: Hazırlık</h2>
-      <p>Tezgahları boşaltın, bulaşıkları toplayın ve çöpleri atın. Temizlik için alan açın.</p>
-
-      <h2>Adım 2: Yukarıdan Başlayın</h2>
-      <p>Davlumbaz ve üst dolaplardan başlayın. Yağ sökücü ürünlerle silin.</p>
-
-      <h2>Adım 3: Tezgahlar</h2>
-      <p>Tüm tezgahları uygun temizleyiciyle silin. Kesme tahtalarını dezenfekte edin.</p>
-
-      <h2>Adım 4: Ev Aletleri</h2>
-      <p>Buzdolabı, fırın, mikrodalga ve diğer cihazları iç ve dıştan temizleyin.</p>
-
-      <h2>Adım 5: Lavabo</h2>
-      <p>Lavabo ve musluğu kireç çözücü ile temizleyin. Giderleri dezenfekte edin.</p>
-
-      <h2>Adım 6: Zemin</h2>
-      <p>Son olarak zemini süpürün ve uygun temizleyici ile paspas yapın.</p>
-
-      <h2>Profesyonel Mutfak Temizliği</h2>
-      <p>Ayda bir profesyonel derin mutfak temizliği yaptırmak, zorlu yağ birikintilerini ve bakteri üremesini önler. Vera Temizlik olarak mutfaklarınızı pırıl pırıl yapıyoruz.</p>
-    `,
-        image: 'https://images.unsplash.com/photo-1556909114-44e3e9699e2b?w=1200&h=600&fit=crop',
-        category: 'Temizlik İpuçları',
-        date: '3 Ocak 2024',
-        readTime: '7 dk',
-        author: { name: 'Vera Temizlik', avatar: 'VT' },
-    },
-};
-
-type Props = {
-    params: Promise<{ slug: string }>;
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = await params;
-    const post = blogPosts[slug];
-
-    if (!post) {
-        return { title: 'Yazı Bulunamadı' };
+    if (isLoading) {
+        return (
+            <div className={styles.page}>
+                <div className={styles.loading}>
+                    <div className={styles.spinner}></div>
+                    <p>Yükleniyor...</p>
+                </div>
+            </div>
+        );
     }
 
-    return {
-        title: post.title,
-        description: post.excerpt,
-        openGraph: {
-            title: post.title,
-            description: post.excerpt,
-            images: [post.image],
-        },
+    if (!post) {
+        return (
+            <div className={styles.page}>
+                <div className={styles.notFound}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                        <line x1="9" y1="9" x2="9.01" y2="9" />
+                        <line x1="15" y1="9" x2="15.01" y2="9" />
+                    </svg>
+                    <h2>Yazı Bulunamadı</h2>
+                    <p>Aradığınız blog yazısı mevcut değil veya kaldırılmış olabilir.</p>
+                    <Link href="/blog" className={styles.backButton}>
+                        Blog&apos;a Dön
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    // Format date for JSON-LD
+    const formatDateForJsonLd = (dateStr: string) => {
+        const parts = dateStr.split(' ');
+        const months: Record<string, string> = {
+            'Ocak': '01', 'Şubat': '02', 'Mart': '03', 'Nisan': '04',
+            'Mayıs': '05', 'Haziran': '06', 'Temmuz': '07', 'Ağustos': '08',
+            'Eylül': '09', 'Ekim': '10', 'Kasım': '11', 'Aralık': '12'
+        };
+        if (parts.length >= 3) {
+            const day = parts[0].padStart(2, '0');
+            const month = months[parts[1]] || '01';
+            const year = parts[2];
+            return `${year}-${month}-${day}`;
+        }
+        return new Date().toISOString().split('T')[0];
     };
-}
-
-export async function generateStaticParams() {
-    return Object.keys(blogPosts).map((slug) => ({ slug }));
-}
-
-export default async function BlogDetayPage({ params }: Props) {
-    const { slug } = await params;
-    const post = blogPosts[slug];
-
-    if (!post) {
-        notFound();
-    }
 
     return (
         <div className={styles.page}>
-            {/* Hero */}
-            <section
-                className={styles.hero}
-                style={{ backgroundImage: `url(${post.image})` }}
-            >
-                <div className={styles.heroOverlay}></div>
+            {/* JSON-LD Structured Data */}
+            <ArticleJsonLd
+                title={post.title}
+                description={post.excerpt}
+                image={post.image.startsWith('http') ? post.image : `https://veratemizlik.com${post.image}`}
+                datePublished={formatDateForJsonLd(post.date)}
+                author="Vera Temizlik"
+                slug={post.slug}
+            />
+            <BreadcrumbJsonLd
+                items={[
+                    { name: 'Ana Sayfa', url: 'https://veratemizlik.com' },
+                    { name: 'Blog', url: 'https://veratemizlik.com/blog' },
+                    { name: post.title, url: `https://veratemizlik.com/blog/${post.slug}` },
+                ]}
+            />
+
+            {/* Hero Section */}
+            <section className={styles.hero}>
+                <div className={styles.heroImage} style={{ backgroundImage: `url(${post.image})` }}>
+                    <div className={styles.heroOverlay}></div>
+                </div>
                 <div className={styles.container}>
                     <div className={styles.heroContent}>
+                        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+                            <Link href="/">Ana Sayfa</Link>
+                            <span>/</span>
+                            <Link href="/blog">Blog</Link>
+                            <span>/</span>
+                            <span>{post.title}</span>
+                        </nav>
+                        <span className={styles.category}>{post.category}</span>
+                        <h1>{post.title}</h1>
+                        <div className={styles.meta}>
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                {post.date}
+                            </span>
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                                {post.readTime} okuma
+                            </span>
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                {post.author}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Article Content */}
+            <article className={styles.article}>
+                <div className={styles.container}>
+                    <div className={styles.content}>
+                        <p className={styles.excerpt}>{post.excerpt}</p>
+                        <div
+                            className={styles.body}
+                            dangerouslySetInnerHTML={{ __html: post.content || '' }}
+                        />
+
+                        {/* Tags */}
+                        {post.tags && post.tags.length > 0 && (
+                            <div className={styles.tags}>
+                                <span className={styles.tagsLabel}>Etiketler:</span>
+                                {post.tags.map((tag, index) => (
+                                    <span key={index} className={styles.tag}>
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Share Buttons */}
+                        <div className={styles.share}>
+                            <span>Paylaş:</span>
+                            <div className={styles.shareButtons}>
+                                <a
+                                    href={`https://www.facebook.com/sharer/sharer.php?u=https://veratemizlik.com/blog/${post.slug}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.shareButton}
+                                    aria-label="Facebook'ta Paylaş"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z" />
+                                    </svg>
+                                </a>
+                                <a
+                                    href={`https://twitter.com/intent/tweet?url=https://veratemizlik.com/blog/${post.slug}&text=${post.title}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.shareButton}
+                                    aria-label="Twitter'da Paylaş"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                    </svg>
+                                </a>
+                                <a
+                                    href={`https://api.whatsapp.com/send?text=${post.title} https://veratemizlik.com/blog/${post.slug}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.shareButton}
+                                    aria-label="WhatsApp'ta Paylaş"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                    </svg>
+                                </a>
+                                <a
+                                    href={`https://www.linkedin.com/shareArticle?mini=true&url=https://veratemizlik.com/blog/${post.slug}&title=${post.title}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.shareButton}
+                                    aria-label="LinkedIn'de Paylaş"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Related Posts */}
+                    {relatedPosts.length > 0 && (
+                        <section className={styles.related}>
+                            <h2>İlgili Yazılar</h2>
+                            <div className={styles.relatedGrid}>
+                                {relatedPosts.map((relatedPost) => (
+                                    <Link
+                                        href={`/blog/${relatedPost.slug}`}
+                                        key={relatedPost.id}
+                                        className={styles.relatedCard}
+                                    >
+                                        <div
+                                            className={styles.relatedImage}
+                                            style={{ backgroundImage: `url(${relatedPost.image})` }}
+                                        />
+                                        <div className={styles.relatedContent}>
+                                            <span className={styles.relatedCategory}>
+                                                {relatedPost.category}
+                                            </span>
+                                            <h3>{relatedPost.title}</h3>
+                                            <span className={styles.relatedDate}>{relatedPost.date}</span>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Back to Blog */}
+                    <div className={styles.backSection}>
                         <Link href="/blog" className={styles.backLink}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <line x1="19" y1="12" x2="5" y2="12" />
                                 <polyline points="12 19 5 12 12 5" />
                             </svg>
-                            Blog&apos;a Dön
-                        </Link>
-                        <span className={styles.category}>{post.category}</span>
-                        <h1 className={styles.title}>{post.title}</h1>
-                        <div className={styles.meta}>
-                            <div className={styles.author}>
-                                <div className={styles.authorAvatar}>{post.author.avatar}</div>
-                                <span>{post.author.name}</span>
-                            </div>
-                            <span>•</span>
-                            <span>{post.date}</span>
-                            <span>•</span>
-                            <span>{post.readTime} okuma</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Content */}
-            <section className={styles.content}>
-                <div className={styles.container}>
-                    <article
-                        className={styles.article}
-                        dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
-
-                    {/* Share */}
-                    <div className={styles.shareBox}>
-                        <span>Bu yazıyı paylaş:</span>
-                        <div className={styles.shareLinks}>
-                            <a href="#" className={styles.shareLink} aria-label="Twitter'da Paylaş">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                                </svg>
-                            </a>
-                            <a href="#" className={styles.shareLink} aria-label="Facebook'ta Paylaş">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                                </svg>
-                            </a>
-                            <a href="#" className={styles.shareLink} aria-label="LinkedIn'de Paylaş">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                                    <circle cx="4" cy="4" r="2" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* CTA */}
-                    <div className={styles.ctaBox}>
-                        <h3>Profesyonel Temizlik Hizmeti İster Misiniz?</h3>
-                        <p>Vera Temizlik olarak evinizi veya ofisinizi pırıl pırıl yapıyoruz.</p>
-                        <Link href="/teklif-al" className="btn btn-primary btn-lg">
-                            Ücretsiz Teklif Al
+                            Tüm Yazılar
                         </Link>
                     </div>
                 </div>
-            </section>
+            </article>
         </div>
     );
 }
